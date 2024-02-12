@@ -2,7 +2,6 @@ package com.uniovi.sdi2324207spring.controllers;
 
 import com.uniovi.sdi2324207spring.entities.Mark;
 import com.uniovi.sdi2324207spring.entities.Professor;
-import com.uniovi.sdi2324207spring.services.MarksService;
 import com.uniovi.sdi2324207spring.services.ProfessorsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,7 @@ public class ProfessorsController {
     }
 
     @RequestMapping(value = "/professor/add", method = RequestMethod.POST)
-    public String addProfessor(@ModelAttribute Professor professor) {
+    public String setProfessor(@ModelAttribute Professor professor) {
         professorsService.addProfessor(professor);
         return "redirect:/professor/list";
     }

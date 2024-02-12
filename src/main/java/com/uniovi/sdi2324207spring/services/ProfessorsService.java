@@ -38,9 +38,9 @@ public class ProfessorsService {
         professorsRepository.save(professor);
     }
 
-    public String editProcessor(Professor professor) {
-        return "edit";
-    }
+//    public String editProcessor(Professor professor) {
+//        return "edit";
+//    }
 
     public void deleteProfessor(Long id) {
         professorsRepository.deleteById(id);

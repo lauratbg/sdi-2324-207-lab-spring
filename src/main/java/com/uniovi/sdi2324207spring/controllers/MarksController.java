@@ -3,9 +3,12 @@ package com.uniovi.sdi2324207spring.controllers;
 import com.uniovi.sdi2324207spring.entities.Mark;
 import com.uniovi.sdi2324207spring.services.MarksService;
 import com.uniovi.sdi2324207spring.services.UsersService;
+import com.uniovi.sdi2324207spring.validators.AddMarkFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,17 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 public class MarksController {
 
-//    @Autowired //Inyectar el servicio
-//    private MarksService marksService;
-
-    // Inyectamos el servicio por inyección basada en constructor
-
     private final MarksService marksService;
     private final UsersService usersService;
 
-    public MarksController(MarksService marksService, UsersService usersService) {
+    private final AddMarkFormValidator addMarkFormValidator;
+
+    public MarksController(MarksService marksService, UsersService usersService, AddMarkFormValidator addMarkFormValidator) {
         this.marksService = marksService;
         this.usersService = usersService;
+        this.addMarkFormValidator = addMarkFormValidator;
     }
 
     @RequestMapping("/mark/list")
@@ -34,10 +35,22 @@ public class MarksController {
         return "mark/list";
     }
 
+
     @RequestMapping(value = "/mark/add", method = RequestMethod.POST)
-    public String setMark(@ModelAttribute Mark mark) {
+    public String setMark(@Validated Mark mark, BindingResult result) {
+        addMarkFormValidator.validate(mark, result);
+        if (result.hasErrors()) {
+            return "/mark/add";
+        }
         marksService.addMark(mark);
         return "redirect:/mark/list";
+    }
+
+    @RequestMapping(value = "/mark/add")
+    public String getMark(Model model) {
+        model.addAttribute("usersList", usersService.getUsers());
+        model.addAttribute("mark", new Mark());
+        return "mark/add";
     }
 
     @RequestMapping("/mark/details/{id}")
@@ -50,12 +63,6 @@ public class MarksController {
     public String deleteMark(@PathVariable Long id) {
         marksService.deleteMark(id);
         return "redirect:/mark/list";
-    }
-
-    @RequestMapping(value="/mark/add")
-    public String getMark(Model model){
-        model.addAttribute("usersList", usersService.getUsers());
-        return "mark/add";
     }
 
     @RequestMapping(value = "/mark/edit/{id}")

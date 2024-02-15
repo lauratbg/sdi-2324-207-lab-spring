@@ -34,6 +34,16 @@ public class ProfessorsService {
         return professorsRepository.findById(id).get();
     }
 
+    public Professor getProfessorByDni(String dni) {
+        Professor p = null;
+        for(int i = 0; i < getProfessors().size(); i++){
+            if(getProfessors().get(i).getDni().equals(dni)){
+                p = getProfessors().get(i);
+            }
+        }
+        return p;
+    }
+
     public void addProfessor(Professor professor) {
         professorsRepository.save(professor);
     }

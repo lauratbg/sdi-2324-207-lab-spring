@@ -14,18 +14,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import com.uniovi.sdi2324207spring.services.RolesService;
 
 @Controller
 public class UsersController {
     private final UsersService usersService;
     private final SecurityService securityService;
-
     private final SignUpFormValidator signUpFormValidator;
+    private final RolesService rolesService;
     public UsersController(UsersService usersService, SecurityService securityService, SignUpFormValidator
-            signUpFormValidator) {
+            signUpFormValidator, RolesService rolesService){
         this.usersService = usersService;
         this.securityService = securityService;
         this.signUpFormValidator = signUpFormValidator;
+        this.rolesService = rolesService;
     }
 
     @RequestMapping("/user/list")
@@ -42,7 +44,7 @@ public class UsersController {
 
     @RequestMapping(value = "/user/add")
     public String getUser(Model model) {
-        model.addAttribute("usersList", usersService.getUsers());
+        model.addAttribute("rolesList", rolesService.getRoles());
         return "user/add";
     }
 
@@ -82,7 +84,7 @@ public class UsersController {
         signUpFormValidator.validate(user, result);
         if(result.hasErrors())
             return "signup";
-
+        user.setRole(rolesService.getRoles()[0]);
         usersService.addUser(user);
         securityService.autoLogin(user.getDni(), user.getPasswordConfirm());
         return "redirect:home";

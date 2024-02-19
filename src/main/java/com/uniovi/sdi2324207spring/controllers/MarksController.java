@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+import java.util.HashSet;
+import java.util.Set;
+
 @Controller
 public class MarksController {
 
@@ -23,14 +27,21 @@ public class MarksController {
 
     private final AddMarkFormValidator addMarkFormValidator;
 
-    public MarksController(MarksService marksService, UsersService usersService, AddMarkFormValidator addMarkFormValidator) {
+    private final HttpSession httpSession;
+    public MarksController(MarksService marksService, UsersService usersService,
+                           AddMarkFormValidator addMarkFormValidator, HttpSession httpSession) {
         this.marksService = marksService;
         this.usersService = usersService;
         this.addMarkFormValidator = addMarkFormValidator;
+        this.httpSession = httpSession;
     }
 
     @RequestMapping("/mark/list")
     public String getList(Model model) {
+        Set<Mark> consultedList = (Set<Mark>) (httpSession.getAttribute("consultedList") != null ?
+                httpSession.getAttribute("consultedList") : new HashSet<>());
+        model.addAttribute("consultedList", consultedList);
+
         model.addAttribute("markList", marksService.getMarks());
         return "mark/list";
     }

@@ -15,6 +15,8 @@ public class Mark {
     @JoinColumn(name="user_id")
     private User user;
 
+    private Boolean resend = false;
+
     public Mark() {
     }
     public Mark(Long id, String description, Double score) {
@@ -57,6 +59,14 @@ public class Mark {
         this.user = user;
     }
 
+    public Boolean getResend() {
+        return resend;
+    }
+
+    public void setResend(Boolean resend) {
+        this.resend = resend;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -64,7 +74,7 @@ public class Mark {
         Mark mark = (Mark) o;
         return Objects.equals(id, mark.id);
     }
-    
+
     @Override
     public String toString() {
         return "Mark{" +

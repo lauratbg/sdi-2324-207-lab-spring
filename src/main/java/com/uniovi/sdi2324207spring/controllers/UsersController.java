@@ -1,9 +1,13 @@
 package com.uniovi.sdi2324207spring.controllers;
 
+import com.uniovi.sdi2324207spring.entities.Mark;
 import com.uniovi.sdi2324207spring.entities.User;
+import com.uniovi.sdi2324207spring.services.MarksService;
 import com.uniovi.sdi2324207spring.services.SecurityService;
 import com.uniovi.sdi2324207spring.services.UsersService;
 import com.uniovi.sdi2324207spring.validators.SignUpFormValidator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -19,12 +23,15 @@ import com.uniovi.sdi2324207spring.services.RolesService;
 @Controller
 public class UsersController {
     private final UsersService usersService;
+    private final MarksService marksService;
+
     private final SecurityService securityService;
     private final SignUpFormValidator signUpFormValidator;
     private final RolesService rolesService;
-    public UsersController(UsersService usersService, SecurityService securityService, SignUpFormValidator
+    public UsersController(UsersService usersService, MarksService marksService, SecurityService securityService, SignUpFormValidator
             signUpFormValidator, RolesService rolesService){
         this.usersService = usersService;
+        this.marksService = marksService;
         this.securityService = securityService;
         this.signUpFormValidator = signUpFormValidator;
         this.rolesService = rolesService;
@@ -101,11 +108,13 @@ public class UsersController {
         return "login";
     }
     @RequestMapping(value = { "/home" }, method = RequestMethod.GET)
-    public String home(Model model) {
+    public String home(Model model, Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String dni = auth.getName();
         User activeUser = usersService.getUserByDni(dni);
+        Page<Mark> marks = marksService.getMarksForUser(pageable, activeUser);
         model.addAttribute("markList", activeUser.getMarks());
+        model.addAttribute("page", marks);
         return "home";
     }
 

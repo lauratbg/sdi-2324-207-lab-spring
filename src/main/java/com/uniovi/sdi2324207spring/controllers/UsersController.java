@@ -113,7 +113,7 @@ public class UsersController {
         String dni = auth.getName();
         User activeUser = usersService.getUserByDni(dni);
         Page<Mark> marks = marksService.getMarksForUser(pageable, activeUser);
-        model.addAttribute("markList", activeUser.getMarks());
+        model.addAttribute("markList", marks.getContent());
         model.addAttribute("page", marks);
         return "home";
     }

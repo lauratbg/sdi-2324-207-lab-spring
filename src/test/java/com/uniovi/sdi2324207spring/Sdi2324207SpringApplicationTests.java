@@ -2,6 +2,8 @@ package com.uniovi.sdi2324207spring;
 
 import com.uniovi.sdi2324207spring.pageobjects.PO_HomeView;
 import com.uniovi.sdi2324207spring.pageobjects.PO_Properties;
+import com.uniovi.sdi2324207spring.pageobjects.PO_SignUpView;
+import com.uniovi.sdi2324207spring.pageobjects.PO_View;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -59,55 +61,55 @@ class Sdi2324207SpringApplicationTests {
         driver.quit();
     }
 
-    @Test
-    @Order(1)
-    void PRO1() {
-    }
-
-    @Test
-    @Order(2)
-    void PRO2() {
-    }
-
-    @Test
-    @Order(3)
-    void PRO3() {
-    }
-
-    @Test
-    @Order(4)
-    void PRO4() {
-    }
-
-    @Test
-    @Order(5)
-    void PRO5() {
-    }
-
-    @Test
-    @Order(6)
-    void PRO6() {
-    }
-
-    @Test
-    @Order(7)
-    void PRO7() {
-    }
-
-    @Test
-    @Order(8)
-    void PRO8() {
-    }
-
-    @Test
-    @Order(9)
-    void PRO9() {
-    }
-
-    @Test
-    @Order(10)
-    void PRO10() {
-    }
+//    @Test
+//    @Order(1)
+//    void PRO1() {
+//    }
+//
+//    @Test
+//    @Order(2)
+//    void PRO2() {
+//    }
+//
+//    @Test
+//    @Order(3)
+//    void PRO3() {
+//    }
+//
+//    @Test
+//    @Order(4)
+//    void PRO4() {
+//    }
+//
+//    @Test
+//    @Order(5)
+//    void PRO5() {
+//    }
+//
+//    @Test
+//    @Order(6)
+//    void PRO6() {
+//    }
+//
+//    @Test
+//    @Order(7)
+//    void PRO7() {
+//    }
+//
+//    @Test
+//    @Order(8)
+//    void PRO8() {
+//    }
+//
+//    @Test
+//    @Order(9)
+//    void PRO9() {
+//    }
+//
+//    @Test
+//    @Order(10)
+//    void PRO10() {
+//    }
 
     @Test
     @Order(1)
@@ -145,5 +147,94 @@ class Sdi2324207SpringApplicationTests {
     public void PR04() {
         PO_HomeView.checkChangeLanguage(driver, "btnSpanish", "btnEnglish",
                 PO_Properties.getSPANISH(), PO_Properties.getENGLISH());
+    }
+
+    //PR05. Prueba del formulario de registro. registro con datos correctos
+    @Test
+    @Order(6)
+    public void PR05() {
+        //Vamos al formulario de registro
+        PO_HomeView.clickOption(driver, "signup", "class", "btn btn-primary");
+        //Rellenamos el formulario.
+        PO_SignUpView.fillForm(driver, "77777778A", "Josefo", "Perez", "77777", "77777");
+        //Comprobamos que entramos en la sección privada y nos nuestra el texto a buscar
+        String checkText = "Notas del usuario";
+        List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
+        Assertions.assertEquals(checkText, result.get(0).getText());
+    }
+
+    //PR06A. Prueba del formulario de registro. DNI repetido en la BD
+// Propiedad: Error.signup.dni.duplicate
+    @Test
+    @Order(7)
+    public void PR06A() {
+        PO_HomeView.clickOption(driver, "signup", "class", "btn btn-primary");
+        PO_SignUpView.fillForm(driver, "99999990A", "Josefo", "Perez", "77777", "77777");
+        List<WebElement> result = PO_SignUpView.checkElementByKey(driver, "Error.signup.dni.duplicate",
+                PO_Properties.getSPANISH());
+        //Comprobamos el error de DNI repetido.
+        String checkText = PO_HomeView.getP().getString("Error.signup.dni.duplicate",
+                PO_Properties.getSPANISH());
+        Assertions.assertEquals(checkText, result.get(0).getText());
+    }
+
+    //PR06B. Prueba del formulario de registro. Nombre corto.
+    // Propiedad: Error.signup.dni.length
+    @Test
+    @Order(8)
+    public void PR06B() {
+        PO_HomeView.clickOption(driver, "signup", "class", "btn btn-primary");
+        PO_SignUpView.fillForm(driver, "99999990B", "Jose", "Perez", "77777", "77777");
+        List<WebElement> result = PO_SignUpView.checkElementByKey(driver, "Error.signup.name.length",
+                PO_Properties.getSPANISH());
+        //Comprobamos el error de Nombre corto de nombre corto .
+        String checkText = PO_HomeView.getP().getString("Error.signup.name.length",
+                PO_Properties.getSPANISH());
+        Assertions.assertEquals(checkText, result.get(0).getText());
+    }
+
+    //PR06C. Prueba del formulario de registro. Apellido corto.
+    // Propiedad: Error.signup.lastName.length
+    @Test
+    @Order(9)
+    public void PR06C() {
+        PO_HomeView.clickOption(driver, "signup", "class", "btn btn-primary");
+        PO_SignUpView.fillForm(driver, "99999990B", "Jose María", "Gayo", "77777", "77777");
+        List<WebElement> result = PO_SignUpView.checkElementByKey(driver, "Error.signup.lastName.length",
+                PO_Properties.getSPANISH());
+        //Comprobamos el error de Apellido corto de apellido corto .
+        String checkText = PO_HomeView.getP().getString("Error.signup.lastName.length",
+                PO_Properties.getSPANISH());
+        Assertions.assertEquals(checkText, result.get(0).getText());
+    }
+
+    //PR06D. Prueba del formulario de registro. Contraseña corta.
+    // Propiedad: Error.signup.password.length
+    @Test
+    @Order(10)
+    public void PR06D() {
+        PO_HomeView.clickOption(driver, "signup", "class", "btn btn-primary");
+        PO_SignUpView.fillForm(driver, "99999990B", "Jose María", "Menéndez", "777", "777");
+        List<WebElement> result = PO_SignUpView.checkElementByKey(driver, "Error.signup.password.length",
+                PO_Properties.getSPANISH());
+        //Comprobamos el error de Contraseña corto de contraseña corto .
+        String checkText = PO_HomeView.getP().getString("Error.signup.password.length",
+                PO_Properties.getSPANISH());
+        Assertions.assertEquals(checkText, result.get(0).getText());
+    }
+
+    //PR06E. Prueba del formulario de registro. Contraseñas no coinciden.
+    // Propiedad: Error.signup.passwordConfirm.coincidence
+    @Test
+    @Order(11)
+    public void PR06E() {
+        PO_HomeView.clickOption(driver, "signup", "class", "btn btn-primary");
+        PO_SignUpView.fillForm(driver, "99999990B", "Jose María", "Menéndez", "77778", "77777");
+        List<WebElement> result = PO_SignUpView.checkElementByKey(driver, "Error.signup.passwordConfirm.coincidence",
+                PO_Properties.getSPANISH());
+        //Comprobamos el error de Contraseña corto de contraseña corto .
+        String checkText = PO_HomeView.getP().getString("Error.signup.passwordConfirm.coincidence",
+                PO_Properties.getSPANISH());
+        Assertions.assertEquals(checkText, result.get(0).getText());
     }
 }
